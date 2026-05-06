@@ -1,7 +1,7 @@
 
 .pixel-grid {
     background: repeating-conic-gradient(#4c4c4c 0 25%, #555 0 50%);
-    background-size: 30px 30px;
+    background-size: 25px 25px;
 
     display: flex;
     flex-direction: column;
@@ -19,12 +19,9 @@
     width: 30px;
     height: 30px;
     box-sizing: border-box;
-
-    border-width: 1px;
-    border-style: solid;
-    border-color: #777 #999 #999 #777;
 }
 .pixel-disabled {
-    border-width: 6px;
+    border-width: 5px;
+    border-style: solid;
     border-color: #777 #999 #999 #777;
 }
