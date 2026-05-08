@@ -3,50 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title>Pixavox</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
 
-<section class="window">
+    <div class="menubar">
+        <div>
+            <div class="menubar__item">item1</div>
+            <div class="menubar__item">item2</div>
+            <button onclick="scaleCanvasToFit()">Scale to Fit</button>
+        </div>
+        <div>
+            <div class="menubar__item">item3</div>
+            <div class="menubar__item">item4</div>
+        </div>
+    </div>
 
-</section>
-
-<div class="pixel-grid">
-    <div class="pixel-row">
-        <div class="pixel"></div>
-        <div class="pixel pixel-disabled" style="background-color: #999;"></div>
-        <div class="pixel"></div>
-        <div class="pixel"></div>
-        <div class="pixel"></div>
-    </div>
-    <div class="pixel-row">
-        <div class="pixel pixel-disabled" style="background-color: #777;"></div>
-        <div class="pixel" style="background-color: red;"></div>
-        <div class="pixel" style="background-color: red;"></div>
-        <div class="pixel" style="background-color: red;"></div>
-        <div class="pixel" style="background-color: red;"></div>
-    </div>
-    <div class="pixel-row">
-        <div class="pixel pixel-disabled" style="background-color: red;"></div>
-        <div class="pixel"></div>
-        <div class="pixel pixel-disabled"></div>
-        <div class="pixel pixel-disabled"></div>
-        <div class="pixel pixel-disabled"></div>
-    </div>
-    <div class="pixel-row">
-        <div class="pixel pixel-disabled" style="background-color: #777;"></div>
-        <div class="pixel" style="background-color: red;"></div>
-        <div class="pixel" style="background-color: red;"></div>
-        <div class="pixel" style="background-color: red;"></div>
-        <div class="pixel" style="background-color: red;"></div>
-    </div>
-    <div class="pixel-row">
-        <div class="pixel"></div>
-        <div class="pixel"></div>
-        <div class="pixel"></div>
-        <div class="pixel"></div>
-        <div class="pixel"></div>
-    </div>
-</div>
+    <section id="tools-window"></section>
+    <section id="textures-window"></section>
+    <main>
+        <section id="canvas-window">
+            <div id="pixel-grid"></div>
+        </section>
+    </main>
 </body>
+
+<script src="script.js"></script>
 </html>
