@@ -4,11 +4,17 @@ $borderColor: rgb(110, 110, 110);
 $menubarHeight: 50px;
 
 :root {
-    --model-width: 0;
-    --model-height: 0;
-    --model-depth: 0;
+    --model-dimensions-length: 0;
+    --model-dimensions-width: 0;
+    --model-dimensions-height: 0;
 
-    --canvas-scale: 0;
+    --grid-y: 0;
+    --grid-x: 0;
+    --grid-scale: 0;
+    --grid-dimensions-width: calc(var(--model-dimensions-length));
+    --grid-dimensions-height: calc(var(--model-dimensions-height));
+    --grid-width: calc(var(--grid-scale) * var(--grid-dimensions-width));
+    --grid-height: calc(var(--grid-scale) * var(--grid-dimensions-height));
 }
 
 html, body {
@@ -53,7 +59,6 @@ body {
 }
 
 main {
-    display: flex;
     width: 100%;
     height: 100%;
 }
@@ -90,24 +95,36 @@ main {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: $primaryColor;
+    background-color: $primaryColor;    
 }
 
-#pixel-grid {
+#pixel-grid-bg {
     background-image: repeating-conic-gradient(#4c4c4c 0 25%, #555 0 50%);
     background-size: 25px 25px;
     background-position: center;
+    
+    width: 100%;
+    height: 100%;
+    clip-path: rect(
+        calc((var(--grid-y) - var(--grid-height)/2) * 1px)
+        calc((var(--grid-x) + var(--grid-width)/2) * 1px)
+        calc((var(--grid-y) + var(--grid-height)/2) * 1px)
+        calc((var(--grid-x) - var(--grid-width)/2) * 1px)
+    );
+}
 
-    width: calc(var(--canvas-scale) * var(--model-width) * 1px);
-    height: calc(var(--canvas-scale) * var(--model-height) * 1px);
+#pixel-grid {
+    width: calc(var(--grid-width) * 1px);
+    height: calc(var(--grid-height) * 1px);
 
     display: grid;
-    grid-template-columns: repeat(var(--model-width), 1fr);
-    grid-template-rows: repeat(var(--model-height), 1fr);
+    grid-template-columns: repeat(var(--grid-dimensions-width), 1fr);
+    grid-template-rows: repeat(var(--grid-dimensions-height), 1fr);
 
     position: absolute;
-    top: calc(50% - (var(--canvas-scale) * var(--model-height) * 0.5px) + ($menubarHeight / 2));
-    left: calc(50% - (var(--canvas-scale) * var(--model-width) * 0.5px));
+    transform: translate(-50%, -50%);
+    top: calc(var(--grid-y) * 1px);
+    left: calc(var(--grid-x) * 1px);
 }
 
 .pixel {
@@ -115,7 +132,7 @@ main {
 }
 
 .pixel-disabled {
-    border-width: calc(var(--canvas-scale) * 0.2px);
+    border-width: calc(var(--grid-scale) * 0.2px);
     border-style: solid;
     border-color: rgba(110, 110, 110, 0.7) rgba(140, 140, 140, 0.7) rgba(140, 140, 140, 0.7) rgba(110, 110, 110, 0.7);
 }

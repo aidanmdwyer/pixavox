@@ -1,40 +1,50 @@
-let scale = 5;
+let gridScale;
+let gridX;
+let gridY;
 const MAX_SCALE = 100;
 const MIN_SCALE = 5;
-const WHD = 20;
+const LWH = 20;
 const root = document.querySelector(":root");
-const pixelGrid = document.getElementById("pixel-grid");
 const toolsWindow = document.getElementById("tools-window");
 const texturesWindow = document.getElementById("textures-window");
+const canvasWindow = document.getElementById("canvas-window");
+const pixelGrid = document.getElementById("pixel-grid");
 const menubar = document.getElementsByClassName("menubar")[0];
+const menubarHeight = getComputedStyle(menubar).height.slice(0, -2);
 let scaledToFit = true;
 
-setUpCanvas(WHD, WHD, WHD);
+setUpGrid(LWH, LWH, LWH);
 
-document.getElementById("canvas-window").addEventListener("wheel", ({deltaY}) => {
+canvasWindow.addEventListener("wheel", ({deltaY: zoom, clientX: mouseX, clientY: mouseY}) => {
+    //scale
     scaledToFit = false;
-    scale += (deltaY/50);
-    if(scale < MIN_SCALE) {
-        scale = MIN_SCALE;
-    }
-    else if(scale > MAX_SCALE) {
-        scale = MAX_SCALE;
-    }
-    root.style.setProperty("--canvas-scale", scale);
+    const oldScale = gridScale;
+    gridScale -= (zoom * 0.0005 * gridScale); // * by gridScale to make zooming uniform, otherwise the closer you get the slower you zoom
+    gridScale = Math.min(Math.max(gridScale, MIN_SCALE), MAX_SCALE);
+    setGridScale(gridScale);
+    
+    //position
+    const scaleRatio = gridScale / oldScale;
+    let gridStyle = getComputedStyle(pixelGrid);
+    let zoomX = Math.min(Math.max(mouseX, gridX - gridStyle.width.slice(0, -2)/2), gridX + gridStyle.width.slice(0, -2)/2);
+    let zoomY = Math.min(Math.max(mouseY, gridY - gridStyle.height.slice(0, -2)/2), gridY + gridStyle.height.slice(0, -2)/2)
+    gridX = zoomX - ((zoomX - gridX) * scaleRatio);
+    gridY = zoomY - ((zoomY - gridY) * scaleRatio);
+    setGridPosition(gridY, gridX);
 });
 
 window.addEventListener("resize", function(event){
-    if(scaledToFit) scaleCanvasToFit();
+    if(scaledToFit) scaleGridToFit();
 });
 
-function setUpCanvas(w, h, d) {
+function setUpGrid(l, w, h) {
     pixelGrid.innerHTML = "";
 
-    root.style.setProperty("--model-width", w);
-    root.style.setProperty("--model-height", h);
-    root.style.setProperty("--model-depth", d);
+    root.style.setProperty("--model-dimensions-length", l);
+    root.style.setProperty("--model-dimensions-width", w);
+    root.style.setProperty("--model-dimensions-height", h);
 
-    scaleCanvasToFit();
+    scaleGridToFit();
 
     for(let i = 0; i < w * h; i++) {
         const pixel = document.createElement("div");
@@ -49,10 +59,24 @@ function setUpCanvas(w, h, d) {
     }
 }
 
-function scaleCanvasToFit() {
+function scaleGridToFit() {
     scaledToFit = true;
-    let maxWidth = getComputedStyle(document.body).width.slice(0, -2) - getComputedStyle(texturesWindow).width.slice(0, -2) - getComputedStyle(toolsWindow).width.slice(0, -2);
-    let maxHeight = getComputedStyle(document.body).height.slice(0, -2) - getComputedStyle(menubar).height.slice(0, -2);
-    scale = Math.min(maxWidth, maxHeight) / 20;
-    root.style.setProperty("--canvas-scale", scale);
+
+    gridX = document.body.clientWidth / 2;
+    gridY = (document.body.clientHeight / 2) + menubarHeight / 2;
+    setGridPosition(gridY, gridX);
+    
+    let maxWidth = document.body.clientWidth - getComputedStyle(texturesWindow).width.slice(0, -2) - getComputedStyle(toolsWindow).width.slice(0, -2);
+    let maxHeight = document.body.clientHeight - menubarHeight;
+    gridScale = Math.min(maxWidth, maxHeight) / 20;
+    setGridScale(gridScale);
+}
+
+function setGridPosition(top, left) {
+    root.style.setProperty("--grid-y", top);
+    root.style.setProperty("--grid-x", left);
+}
+
+function setGridScale(scale) {
+    root.style.setProperty("--grid-scale", scale);
 }
